@@ -51,26 +51,46 @@ local function loadConfig(path)
 end
 
 local function extractAssistantText(choice)
-  if type(choice) ~= "table" or type(choice.message) ~= "table" then
+  if type(choice) ~= "table" then
     return nil
   end
 
-  local content = choice.message.content
+  if type(choice.text) == "string" and trim(choice.text) ~= "" then
+    return choice.text
+  end
+
+  local message = choice.message
+  if type(message) ~= "table" then
+    return nil
+  end
+
+  local content = message.content
   if type(content) == "string" then
-    return content
+    local t = trim(content)
+    if t ~= "" then
+      return t
+    end
   end
 
   if type(content) == "table" then
     local parts = {}
     for i = 1, #content do
       local part = content[i]
-      if type(part) == "table" and part.type == "text" and type(part.text) == "string" then
-        parts[#parts + 1] = part.text
+      if type(part) == "table" then
+        if part.type == "text" and type(part.text) == "string" and trim(part.text) ~= "" then
+          parts[#parts + 1] = part.text
+        elseif part.type == "output_text" and type(part.text) == "string" and trim(part.text) ~= "" then
+          parts[#parts + 1] = part.text
+        end
       end
     end
     if #parts > 0 then
       return table.concat(parts, "\n")
     end
+  end
+
+  if type(message.refusal) == "string" and trim(message.refusal) ~= "" then
+    return "[refusal] " .. message.refusal
   end
 
   return nil
@@ -114,7 +134,8 @@ local function openRouterChat(config, messages, maxTokens)
 
   local text = extractAssistantText(choices[1])
   if not text or text == "" then
-    return nil, "Assistant returned empty content"
+    local finishReason = choices[1].finish_reason and tostring(choices[1].finish_reason) or "unknown"
+    return nil, "Assistant returned empty content (finish_reason: " .. finishReason .. ")"
   end
 
   return text, nil
@@ -165,7 +186,7 @@ check("OpenRouter", function()
     { role = "user", content = "Ping" }
   }
 
-  local reply, err = openRouterChat(config, probeMessages, 8)
+  local reply, err = openRouterChat(config, probeMessages, 32)
   if not reply then
     return false, err or "OpenRouter probe failed"
   end
