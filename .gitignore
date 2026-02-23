@@ -22,3 +22,6 @@ computer/
 # Node/Python tooling (only if used in this repo)
 node_modules/
 .venv/
+
+# BedrockOS secrets (keep local only)
+SB4/config.lua

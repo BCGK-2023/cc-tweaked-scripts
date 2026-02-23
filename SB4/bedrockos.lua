@@ -29,11 +29,17 @@ local function loadConfig(path)
   return cfg
 end
 
-local config = loadConfig("SB4/config.lua")
+local configPath = "SB4/config.lua"
+local config = loadConfig(configPath)
 
 print("[BedrockOS] Boot Sequence")
 check("Config", function()
-  return config ~= nil
+  if config == nil then
+    print("")
+    print("Create " .. configPath .. " from SB4/config.example.lua and fill values.")
+    return false
+  end
+  return true
 end)
 
 check("HTTP access", function()
