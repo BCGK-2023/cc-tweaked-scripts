@@ -96,12 +96,12 @@ local function extractAssistantText(choice)
   return nil
 end
 
-local function openRouterChat(config, messages, maxTokens)
+local function openRouterChat(config, messages, maxTokens, temperature)
   local payload = {
     model = config.MODEL,
     messages = messages,
     max_tokens = maxTokens or 300,
-    temperature = 0.2
+    temperature = temperature
   }
 
   local body = textutils.serializeJSON(payload)
@@ -186,7 +186,7 @@ check("OpenRouter", function()
     { role = "user", content = "Ping" }
   }
 
-  local reply, err = openRouterChat(config, probeMessages, 32)
+  local reply, err = openRouterChat(config, probeMessages, 5000, 0)
   if not reply then
     return false, err or "OpenRouter probe failed"
   end
@@ -220,7 +220,7 @@ while true do
     history = clampHistory(history)
 
     write("bedrockos> ")
-    local reply, err = openRouterChat(config, history, 300)
+    local reply, err = openRouterChat(config, history, 15000, 1)
     if not reply then
       print("error: " .. tostring(err))
       history[#history] = nil
