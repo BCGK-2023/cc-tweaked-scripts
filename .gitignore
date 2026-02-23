@@ -6,7 +6,8 @@ Thumbs.db
 *.log
 
 # Editors/IDE
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 *.swp
 

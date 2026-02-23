@@ -1,0 +1,38 @@
+{
+  "Lua.runtime.version": "Lua 5.2",
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.diagnostics.globals": [
+    "_HOST",
+    "colours",
+    "colors",
+    "commands",
+    "disk",
+    "fs",
+    "gps",
+    "help",
+    "http",
+    "keys",
+    "multishell",
+    "paintutils",
+    "parallel",
+    "peripheral",
+    "pocket",
+    "rednet",
+    "redstone",
+    "rs",
+    "settings",
+    "shell",
+    "term",
+    "textutils",
+    "turtle",
+    "vector",
+    "window",
+    "sleep",
+    "read",
+    "write",
+    "print"
+  ],
+  "files.associations": {
+    "*.lua": "lua"
+  }
+}
